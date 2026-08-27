@@ -32,7 +32,7 @@ export default function Home() {
       </section>
 
       <div id="marketplace" className="scroll-mt-20">
-        <Marketplace initialProducts={products} />
+        <Marketplace />
       </div>
     </>
   );

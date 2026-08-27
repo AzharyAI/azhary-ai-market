@@ -1,51 +1,24 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { CATEGORIES, type Product } from "@/lib/products";
+import { useMemo, useState } from "react";
+import { CATEGORIES, searchProducts, type Product } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 
 const FILTERS = ["All", ...CATEGORIES] as const;
 
-export function Marketplace({ initialProducts }: { initialProducts: Product[] }) {
+export function Marketplace() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("All");
-  const [results, setResults] = useState<Product[]>(initialProducts);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const timeout = setTimeout(async () => {
-      setLoading(true);
-      try {
-        const params = new URLSearchParams();
-        if (query.trim()) params.set("q", query.trim());
-        if (category !== "All") params.set("category", category);
-
-        const response = await fetch(`/api/products?${params.toString()}`, {
-          signal: controller.signal,
-        });
-        const data = (await response.json()) as { results: Product[] };
-        setResults(data.results);
-      } catch (error) {
-        if (!(error instanceof DOMException && error.name === "AbortError")) {
-          console.error("Failed to load products", error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    }, 200);
-
-    return () => {
-      controller.abort();
-      clearTimeout(timeout);
-    };
-  }, [query, category]);
+  const results = useMemo<Product[]>(
+    () => searchProducts({ q: query, category }),
+    [query, category],
+  );
 
   const heading = useMemo(() => {
-    if (loading) return "Searching…";
     if (results.length === 0) return "No results found";
     return `${results.length} ${results.length === 1 ? "result" : "results"}`;
-  }, [loading, results.length]);
+  }, [results.length]);
 
   return (
     <section className="mx-auto max-w-6xl px-6 pb-20">
@@ -95,7 +68,7 @@ export function Marketplace({ initialProducts }: { initialProducts: Product[] })
         ))}
       </div>
 
-      {results.length === 0 && !loading && (
+      {results.length === 0 && (
         <div className="mt-10 rounded-2xl border border-dashed border-white/10 p-12 text-center text-slate-400">
           Try a different search term or category.
         </div>

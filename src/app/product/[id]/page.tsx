@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getProduct, products } from "@/lib/products";
+import { formatPrice, getProduct, products } from "@/lib/products";
+import { AddToCartButton } from "@/components/AddToCartButton";
 
 export function generateStaticParams() {
   return products.map((product) => ({ id: product.id }));
@@ -12,9 +13,9 @@ export async function generateMetadata({
 }: PageProps<"/product/[id]">): Promise<Metadata> {
   const { id } = await params;
   const product = getProduct(id);
-  if (!product) return { title: "Product not found — Azhary AI Market" };
+  if (!product) return { title: "المنتج غير موجود — سوق أزهري الذكي" };
   return {
-    title: `${product.name} — Azhary AI Market`,
+    title: `${product.name} — سوق أزهري الذكي`,
     description: product.tagline,
   };
 }
@@ -25,93 +26,54 @@ export default async function ProductPage({
   const { id } = await params;
   const product = getProduct(id);
 
-  if (!product) {
-    notFound();
-  }
+  if (!product) notFound();
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
-      <Link
-        href="/"
-        className="text-sm text-slate-400 transition hover:text-white"
-      >
-        ← Back to marketplace
+    <div className="space-y-6">
+      <Link href="/" className="text-sm text-stone-500">
+        → العودة للسوق
       </Link>
 
-      <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-start">
+      <section className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(28,58,42,0.06)]">
         <div
-          className={`grid h-20 w-20 shrink-0 place-items-center rounded-2xl bg-gradient-to-br ${product.gradient} text-4xl`}
+          className={`grid h-24 w-24 place-items-center rounded-3xl bg-gradient-to-br ${product.gradient} text-5xl`}
         >
           {product.emoji}
         </div>
-        <div className="flex-1">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl font-bold text-white">{product.name}</h1>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-slate-300">
-              {product.category}
-            </span>
-          </div>
-          <p className="mt-2 text-lg text-slate-400">{product.tagline}</p>
-          <div className="mt-3 flex items-center gap-4 text-sm text-slate-400">
-            <span>by {product.provider}</span>
-            <span className="flex items-center gap-1 text-amber-400">
-              ★{" "}
-              <span className="text-slate-300">
-                {product.rating.toFixed(1)}
-              </span>
-              <span className="text-slate-500">({product.reviews} reviews)</span>
-            </span>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <h1 className="text-2xl font-bold text-emerald-950">{product.name}</h1>
+          <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs text-emerald-800">
+            {product.category}
+          </span>
+        </div>
+        <p className="mt-2 text-stone-600">{product.tagline}</p>
+        <p className="mt-2 text-sm text-stone-500">البائع: {product.seller}</p>
+        <div className="mt-4 flex items-end justify-between">
+          <div>
+            <p className="text-2xl font-bold text-emerald-900">{formatPrice(product.price)}</p>
+            <p className="text-xs text-stone-500">
+              ★ {product.rating.toFixed(1)} ({product.reviews}) · المخزون {product.stock}
+            </p>
           </div>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
-          <div className="text-3xl font-bold text-white">
-            ${product.pricePerMonth}
-            <span className="text-sm font-normal text-slate-500">/mo</span>
-          </div>
-          <button
-            type="button"
-            className="mt-3 w-full rounded-xl bg-indigo-500 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-400"
-          >
-            Deploy now
-          </button>
+        <div className="mt-5">
+          <AddToCartButton productId={product.id} stock={product.stock} />
         </div>
-      </div>
+      </section>
 
-      <div className="mt-10 grid gap-8 sm:grid-cols-3">
-        <div className="sm:col-span-2">
-          <h2 className="text-lg font-semibold text-white">Overview</h2>
-          <p className="mt-3 leading-relaxed text-slate-400">
-            {product.description}
-          </p>
-
-          <h2 className="mt-8 text-lg font-semibold text-white">Capabilities</h2>
-          <ul className="mt-3 space-y-2">
-            {product.capabilities.map((capability) => (
-              <li
-                key={capability}
-                className="flex items-start gap-2 text-slate-300"
-              >
-                <span className="mt-1 text-emerald-400">✓</span>
-                {capability}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <aside>
-          <h2 className="text-lg font-semibold text-white">Tags</h2>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {product.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-md bg-white/5 px-2.5 py-1 text-xs text-slate-300"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </aside>
-      </div>
+      <section className="rounded-[28px] bg-white p-5">
+        <h2 className="font-bold text-emerald-950">الوصف</h2>
+        <p className="mt-2 leading-8 text-stone-600">{product.description}</p>
+        <h2 className="mt-6 font-bold text-emerald-950">المواصفات</h2>
+        <ul className="mt-2 space-y-2 text-stone-700">
+          {product.specs.map((spec) => (
+            <li key={spec} className="flex gap-2">
+              <span className="text-emerald-700">•</span>
+              {spec}
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }

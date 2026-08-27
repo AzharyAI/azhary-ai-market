@@ -1,39 +1,38 @@
+import Link from "next/link";
 import { Marketplace } from "@/components/Marketplace";
 import { products } from "@/lib/products";
 
 export default function Home() {
   return (
-    <>
-      <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_0%,rgba(99,102,241,0.25),transparent)]" />
-        <div className="mx-auto max-w-6xl px-6 py-20 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-slate-300">
-            🚀 {products.length} curated AI products and counting
-          </span>
-          <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-6xl">
-            The marketplace for{" "}
-            <span className="bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">
-              AI that ships
-            </span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-400">
-            Browse, compare, and deploy the best language models, image
-            generators, voice engines, and autonomous agents — all in one place.
-          </p>
-          <div className="mt-8 flex items-center justify-center gap-3">
-            <a
-              href="#marketplace"
-              className="rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400"
-            >
-              Explore the marketplace
-            </a>
-          </div>
+    <div className="space-y-6">
+      <section className="overflow-hidden rounded-[28px] bg-gradient-to-br from-emerald-900 via-emerald-800 to-amber-800 px-5 py-7 text-white">
+        <p className="text-xs font-medium text-amber-200">المرحلة 0 — معاينة للجوال</p>
+        <h1 className="mt-2 text-3xl font-bold leading-snug">
+          سوق يفهم طلبك
+          <span className="block text-amber-200">ويرشّح من البضاعة الحقيقية</span>
+        </h1>
+        <p className="mt-3 max-w-xl text-sm leading-7 text-emerald-50/90">
+          تصفح، اسأل المساعد بالعربية، أضف للسلة، وأتمّ طلباً تجريبياً بالدفع عند الاستلام.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          <Link
+            href="/assistant/"
+            className="rounded-full bg-white px-4 py-2.5 text-sm font-bold text-emerald-900"
+          >
+            اسأل المساعد
+          </Link>
+          <a
+            href="#market"
+            className="rounded-full bg-white/10 px-4 py-2.5 text-sm font-bold text-white ring-1 ring-white/20"
+          >
+            تصفح المنتجات
+          </a>
         </div>
       </section>
 
-      <div id="marketplace" className="scroll-mt-20">
+      <div id="market">
         <Marketplace initialProducts={products} />
       </div>
-    </>
+    </div>
   );
 }

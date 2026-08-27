@@ -1,43 +1,28 @@
 import Link from "next/link";
 import type { Product } from "@/lib/products";
+import { formatPrice } from "@/lib/products";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
     <Link
-      href={`/product/${product.id}`}
-      className="group flex flex-col rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:-translate-y-1 hover:border-white/20 hover:bg-white/10"
+      href={`/product/${product.id}/`}
+      className="flex flex-col rounded-3xl border border-emerald-900/10 bg-white p-4 shadow-[0_8px_30px_rgba(28,58,42,0.06)] transition active:scale-[0.99]"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div
-          className={`grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br ${product.gradient} text-2xl`}
+          className={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br ${product.gradient} text-3xl`}
         >
           {product.emoji}
         </div>
-        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-slate-300">
+        <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-800">
           {product.category}
         </span>
       </div>
-      <h3 className="mt-4 text-lg font-semibold text-white">{product.name}</h3>
-      <p className="mt-1 text-sm text-slate-400">{product.tagline}</p>
-      <div className="mt-4 flex flex-wrap gap-1.5">
-        {product.tags.slice(0, 3).map((tag) => (
-          <span
-            key={tag}
-            className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-400"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-      <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4 text-sm">
-        <span className="flex items-center gap-1 text-amber-400">
-          ★ <span className="text-slate-300">{product.rating.toFixed(1)}</span>
-          <span className="text-slate-500">({product.reviews})</span>
-        </span>
-        <span className="font-semibold text-white">
-          ${product.pricePerMonth}
-          <span className="text-xs font-normal text-slate-500">/mo</span>
-        </span>
+      <h3 className="mt-3 text-base font-bold text-emerald-950">{product.name}</h3>
+      <p className="mt-1 line-clamp-2 text-sm text-stone-500">{product.tagline}</p>
+      <div className="mt-4 flex items-center justify-between text-sm">
+        <span className="text-amber-700">★ {product.rating.toFixed(1)}</span>
+        <span className="font-bold text-emerald-900">{formatPrice(product.price)}</span>
       </div>
     </Link>
   );

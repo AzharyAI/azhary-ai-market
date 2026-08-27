@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F5C4C" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>سوق أزهري الذكي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --green:#0f5c4c; --green-2:#145c45; --gold:#c9a227; --bg:#f7f3ea; --ink:#14261c; --card:#fff; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body { margin:0; min-height:100%; }
+    body { font-family:"Cairo",sans-serif; background:radial-gradient(900px 420px at 100% -10%,#efe4c4,transparent 55%),var(--bg); color:var(--ink); }
+    a { color:inherit; text-decoration:none; }
+    button,input,textarea { font:inherit; }
+    .wrap { max-width:640px; margin:0 auto; padding:12px 14px 92px; }
+    header.app { position:sticky; top:0; z-index:20; backdrop-filter:blur(12px); background:rgba(251,247,238,.92); border-bottom:1px solid rgba(15,92,76,.1); }
+    header.app .row { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:10px; padding:10px 14px; }
+    .logo { width:36px; height:36px; border-radius:14px; display:grid; place-items:center; color:#fff; font-weight:800; background:linear-gradient(135deg,#0f5c4c,#b8860b); }
+    .logo-text b { display:block; font-size:14px; }
+    .logo-text span { font-size:11px; color:#6b6254; }
+    .hero { background:linear-gradient(135deg,#0b3d32,#147a5f 55%,#8a6a16); color:#fff; border-radius:28px; padding:22px 18px; }
+    .hero h1 { margin:8px 0 0; font-size:28px; line-height:1.35; }
+    .hero p { margin:10px 0 0; font-size:14px; line-height:1.8; color:#eef6f1; }
+    .chips, .row-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+    .btn { border:0; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; }
+    .btn.light { background:#fff; color:var(--green); }
+    .btn.ghost { background:rgba(255,255,255,.12); color:#fff; }
+    .btn.solid { width:100%; background:var(--green); color:#fff; border-radius:16px; padding:13px; }
+    .search { width:100%; margin-top:16px; border:1px solid rgba(15,92,76,.12); background:#fff; border-radius:16px; padding:13px 14px; }
+    .cats { display:flex; gap:8px; overflow:auto; padding:12px 0; }
+    .cat { white-space:nowrap; border:0; border-radius:999px; padding:8px 14px; background:#fff; color:#4b524c; }
+    .cat.on { background:var(--green); color:#fff; }
+    .grid { display:grid; gap:10px; }
+    .card { background:var(--card); border-radius:24px; padding:14px; box-shadow:0 8px 24px rgba(28,58,42,.06); }
+    .thumb { width:54px; height:54px; border-radius:16px; display:grid; place-items:center; font-size:28px; color:#fff; }
+    .muted { color:#6d6458; font-size:13px; }
+    .price { font-weight:800; color:var(--green); }
+    .bottom { position:fixed; inset-inline:0; bottom:0; background:rgba(251,247,238,.96); border-top:1px solid rgba(15,92,76,.1); padding:6px 0 calc(8px + env(safe-area-inset-bottom)); }
+    .bottom nav { max-width:640px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); }
+    .bottom a { text-align:center; font-size:11px; font-weight:700; color:#6d6458; padding:8px 0; }
+    .bottom a.on { color:var(--green); }
+    .badge { background:#b45309; color:#fff; border-radius:999px; font-size:10px; padding:1px 5px; margin-right:4px; }
+    .chat { display:flex; flex-direction:column; gap:10px; }
+    .bubble { max-width:92%; border-radius:22px; padding:11px 14px; font-size:14px; line-height:1.8; }
+    .me { margin-right:auto; background:var(--green); color:#fff; }
+    .bot { margin-left:auto; background:#fff; }
+    .mini { background:#eef7f2; border-radius:16px; padding:10px; margin-top:8px; }
+    form.bar { display:flex; gap:8px; position:sticky; bottom:84px; }
+    form.bar input { flex:1; border:0; border-radius:16px; padding:12px; }
+    .qty { display:flex; align-items:center; gap:8px; }
+    .qty button { width:32px; height:32px; border:0; border-radius:999px; background:#eef7f2; }
+    .ok { background:#dcfce7; color:#14532d; border-radius:16px; padding:10px 12px; font-size:13px; }
+    h2 { margin:8px 0 12px; }
+  </style>
+</head>
+<body>
+  <header class="app">
+    <div class="row">
+      <div class="logo">أ</div>
+      <div class="logo-text">
+        <b>سوق أزهري الذكي</b>
+        <span>معاينة تجريبية للجوال</span>
+      </div>
+    </div>
+  </header>
+  <div class="wrap" id="app"></div>
+  <div class="bottom">
+    <nav>
+      <a href="#/" id="n-home">الرئيسية</a>
+      <a href="#/assistant" id="n-assistant">المساعد</a>
+      <a href="#/cart" id="n-cart">السلة</a>
+      <a href="#/orders" id="n-orders">طلباتي</a>
+    </nav>
+  </div>
+  <script>
+    const PRODUCTS = [
+      {id:"study-laptop", name:"لابتوب الدراسة برو", tagline:"خفيف وسريع للمحاضرات والبحث", desc:"لابتوب مناسب للطالب والباحث: شاشة واضحة وبطارية طويلة.", cat:"إلكترونيات", seller:"متجر النور", price:1899, stock:7, rating:4.8, reviews:214, tags:["لابتوب","دراسة","جامعة"], specs:["شاشة 14 بوصة","ذاكرة 16 جيجا","بطارية حتى 12 ساعة"], emoji:"💻", color:"#0f766e"},
+      {id:"city-phone", name:"هاتف أزهري S", tagline:"كاميرا نقية وبطارية ليوم كامل", desc:"هاتف يومي بكاميرا واضحة وشحن سريع.", cat:"إلكترونيات", seller:"ركن التقنية", price:4299, stock:11, rating:4.6, reviews:508, tags:["جوال","هاتف","كاميرا"], specs:["شاشة 6.6 بوصة","بطارية 5000 مللي","ذاكرة 256 جيجا"], emoji:"📱", color:"#334155"},
+      {id:"quiet-buds", name:"سماعات هدوء", tagline:"عزل للصوت أثناء المذاكرة", desc:"سماعات لاسلكية بعزل للضجيج للمكتبة والمواصلات.", cat:"إلكترونيات", seller:"صوت النقى", price:349, stock:24, rating:4.5, reviews:331, tags:["سماعات","مذاكرة","بلوتوث"], specs:["عزل نشط","شحن علبة 28 ساعة"], emoji:"🎧", color:"#b45309"},
+      {id:"smart-watch", name:"ساعة فجر الذكية", tagline:"تنبيهات الصلاة ونشاطك اليومي", desc:"ساعة خفيفة لمواعيد الصلاة والخطوات.", cat:"إلكترونيات", seller:"ركن التقنية", price:279, stock:18, rating:4.3, reviews:146, tags:["ساعة","رياضة","صلاة"], specs:["بطارية 7 أيام","مقاومة ماء"], emoji:"⌚", color:"#0f766e"},
+      {id:"fiqh-book", name:"مختصر الفقه الميسر", tagline:"طبعة واضحة بغلاف مقوى", desc:"كتاب مرتب للعناية بالمسائل اليومية بخط مقروء.", cat:"كتب", seller:"مكتبة الأزهر", price:85, stock:40, rating:4.9, reviews:672, tags:["كتاب","فقه","دراسة"], specs:["غلاف مقوى","ورق كريمي"], emoji:"📖", color:"#365314"},
+      {id:"nahw-book", name:"تيسير النحو", tagline:"شرح لطيف لطلاب العربية", desc:"مدخل مبسّط للنحو مع أمثلة وتمارين قصيرة.", cat:"كتب", seller:"مكتبة الأزهر", price:65, stock:33, rating:4.7, reviews:290, tags:["نحو","عربية","طلاب"], specs:["192 صفحة","تمارين محلولة"], emoji:"📗", color:"#166534"},
+      {id:"canvas-tote", name:"حقيبة طالب متينة", tagline:"تتسع للكتب واللابتوب معاً", desc:"حقيبة قماش مقوّى بجيب للابتوب حتى 15 بوصة.", cat:"أزياء", seller:"خياطة القاهرة", price:159, stock:21, rating:4.4, reviews:188, tags:["حقيبة","جامعة","قماش"], specs:["جيب لابتوب","قماش مقاوم للماء"], emoji:"🎒", color:"#44403c"},
+      {id:"cotton-thobe", name:"ثوب قطن صيفي", tagline:"خفيف للطقس الحار", desc:"ثوب قطني فضفاض بخياطة نظيفة للصيف.", cat:"أزياء", seller:"خياطة القاهرة", price:220, stock:15, rating:4.6, reviews:97, tags:["ثوب","قطن","صيفي"], specs:["قطن 100%","سهل الغسيل"], emoji:"🤍", color:"#57534e"},
+      {id:"desk-lamp", name:"إضاءة مكتب دافئة", tagline:"تحمي العين أثناء القراءة", desc:"مصباح مكتبي بثلاث درجات إضاءة وذراع مرن.", cat:"منزل", seller:"بيت الدفء", price:119, stock:27, rating:4.5, reviews:154, tags:["إضاءة","مكتب","قراءة"], specs:["3 درجات","ذراع مرن"], emoji:"💡", color:"#a16207"},
+      {id:"tea-set", name:"طقم شاي الضيافة", tagline:"إبريق وأكواب لستة أشخاص", desc:"طقم بورسلين بزخرفة هادئة للضيافة اليومية.", cat:"منزل", seller:"بيت الدفء", price:245, stock:9, rating:4.2, reviews:76, tags:["شاي","ضيافة","مطبخ"], specs:["بورسلين","6 أكواب"], emoji:"🍵", color:"#9f1239"},
+      {id:"oud-oil", name:"دهن عود أصيل", tagline:"رائحة ثابتة بتركيز معتدل", desc:"دهن عود بحجم السفر للمناسبات والاستخدام اليومي.", cat:"جمال", seller:"عطور المشكاة", price:180, stock:16, rating:4.8, reviews:243, tags:["عطر","عود","هدايا"], specs:["3 مل","ثبات عالٍ"], emoji:"✨", color:"#854d0e"},
+      {id:"miswak-set", name:"طقم عناية يومية", tagline:"مسواك وفرشاة ولوشن خفيف", desc:"مجموعة صغيرة للعناية اليومية بحجم السفر.", cat:"جمال", seller:"عطور المشكاة", price:75, stock:30, rating:4.4, reviews:121, tags:["عناية","مسواك","يومي"], specs:["مسواك طازج","لوشن 50 مل"], emoji:"🌿", color:"#166534"}
+    ];
+    const CATS = ["الكل","إلكترونيات","كتب","أزياء","منزل","جمال"];
+    const money = n => n.toLocaleString("ar-EG") + " ج.م";
+    const load = (k, f) => { try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch { return f; } };
+    const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+    const get = id => PRODUCTS.find(p => p.id === id);
+    let cart = load("azhary-cart", []);
+    let orders = load("azhary-orders", []);
+    const count = () => cart.reduce((s,i)=>s+i.qty,0);
+    const total = () => cart.reduce((s,i)=>{ const p=get(i.productId); return s+(p?p.price*i.qty:0); },0);
+    function add(id) {
+      const p = get(id); if (!p) return "المنتج غير موجود";
+      const item = cart.find(i => i.productId === id);
+      const qty = (item?.qty || 0) + 1;
+      if (qty > p.stock) return "الكمية أكبر من المخزون";
+      if (item) item.qty = qty; else cart.push({productId:id, qty:1});
+      save("azhary-cart", cart); return "أُضيف إلى السلة";
+    }
+    function setQty(id, qty) {
+      const p = get(id); if (!p) return;
+      if (qty <= 0) cart = cart.filter(i => i.productId !== id);
+      else cart = cart.map(i => i.productId===id ? {...i, qty: Math.min(qty, p.stock)} : i);
+      save("azhary-cart", cart);
+    }
+    function answer(text) {
+      const raw = text.trim(); if (!raw) return {text:"اكتب ما تحتاجه بالعربية، مثل: لابتوب للدراسة تحت 2000.", products:[]};
+      const norm = raw.replace(/[٠-٩]/g, d => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
+      const matched = norm.match(/(\d{2,6})/);
+      const budget = matched ? Number(matched[1]) : null;
+      const hints = [
+        [["لابتوب","كمبيوتر","دراسة","جامعة","هاتف","جوال","سماع","ساعة"], "إلكترونيات"],
+        [["كتاب","فقه","نحو","مذاكرة","قراءة"], "كتب"],
+        [["حقيبة","ثوب","ملابس","قطن"], "أزياء"],
+        [["مصباح","إضاءة","شاي","منزل","مكتب"], "منزل"],
+        [["عطر","عود","مسواك","جمال","هدية"], "جمال"]
+      ];
+      const cats = hints.filter(h => h[0].some(k => raw.includes(k))).map(h => h[1]);
+      let matches = PRODUCTS.filter(p => (!budget || p.price <= budget) && (cats.length===0 || cats.includes(p.cat) || p.tags.some(t => raw.includes(t)) || raw.includes(p.name)));
+      if (!matches.length) matches = PRODUCTS.filter(p => !budget || p.price <= budget);
+      matches = matches.sort((a,b)=>b.rating-a.rating).slice(0,3);
+      if (!matches.length) return {text:"لم أجد منتجاً مطابقاً داخل الكتالوج.", products:[]};
+      return {text:`وجدت ${matches.length} خيارات مناسبة${budget? " ضمن "+money(budget):""}.`, products:matches};
+    }
+    let filter = "الكل", q = "", chat = [{role:"bot", text:"مرحباً، أنا مساعد سوق أزهري. صف احتياجك بالعربية وسأرشّح من المنتجات الموجودة فقط."}];
+    function route() {
+      const hash = location.hash.replace(/^#/, "") || "/";
+      const parts = hash.split("/").filter(Boolean);
+      document.querySelectorAll(".bottom a").forEach(a => a.classList.remove("on"));
+      const key = parts[0] || "home";
+      const nav = document.getElementById("n-" + (key==="product"||key==="checkout"?"home":key==="home"||!parts[0]?"home":key));
+      if (nav) nav.classList.add("on");
+      const cartLink = document.getElementById("n-cart");
+      cartLink.innerHTML = "السلة" + (count()? ` <span class="badge">${count()}</span>` : "");
+      if (!parts.length) return home();
+      if (parts[0]==="product") return product(parts[1]);
+      if (parts[0]==="assistant") return assistant();
+      if (parts[0]==="cart") return cartPage();
+      if (parts[0]==="checkout") return checkout();
+      if (parts[0]==="orders") return ordersPage();
+      home();
+    }
+    const app = document.getElementById("app");
+    function home() {
+      const list = PRODUCTS.filter(p => (filter==="الكل"||p.cat===filter) && (!q || (p.name+p.tagline+p.tags.join(" ")).includes(q)));
+      app.innerHTML = `
+        <section class="hero">
+          <div class="muted" style="color:#fde68a">المرحلة 0 — معاينة للجوال</div>
+          <h1>سوق يفهم طلبك<br>ويرشّح من البضاعة الحقيقية</h1>
+          <p>تصفح، اسأل المساعد بالعربية، أضف للسلة، وأتمّ طلباً تجريبياً بالدفع عند الاستلام.</p>
+          <div class="row-actions">
+            <a class="btn light" href="#/assistant">اسأل المساعد</a>
+            <a class="btn ghost" href="#market">تصفح المنتجات</a>
+          </div>
+        </section>
+        <input class="search" id="search" placeholder="ابحث: لابتوب، كتاب، عطر..." value="${q}">
+        <div class="cats" id="cats">${CATS.map(c=>`<button class="cat ${c===filter?"on":""}" data-c="${c}">${c}</button>`).join("")}</div>
+        <p class="muted">${list.length} منتجات</p>
+        <div class="grid" id="market">${list.map(card).join("") || `<div class="card muted">لا توجد نتائج.</div>`}</div>`;
+      document.getElementById("search").oninput = e => { q = e.target.value; home(); document.getElementById("search").focus(); document.getElementById("search").setSelectionRange(q.length,q.length); };
+      document.querySelectorAll(".cat").forEach(b => b.onclick = () => { filter = b.dataset.c; home(); });
+    }
+    function card(p) {
+      return `<a class="card" href="#/product/${p.id}"><div style="display:flex;justify-content:space-between"><div class="thumb" style="background:${p.color}">${p.emoji}</div><span class="muted">${p.cat}</span></div><b style="display:block;margin-top:10px">${p.name}</b><div class="muted">${p.tagline}</div><div style="display:flex;justify-content:space-between;margin-top:10px"><span>★ ${p.rating}</span><span class="price">${money(p.price)}</span></div></a>`;
+    }
+    function product(id) {
+      const p = get(id); if (!p) { app.innerHTML = "المنتج غير موجود"; return; }
+      app.innerHTML = `
+        <a class="muted" href="#/">→ العودة للسوق</a>
+        <div class="card" style="margin-top:12px">
+          <div class="thumb" style="width:84px;height:84px;font-size:42px;background:${p.color}">${p.emoji}</div>
+          <h2>${p.name}</h2>
+          <div class="muted">${p.tagline}<br>البائع: ${p.seller}</div>
+          <p class="price" style="font-size:22px">${money(p.price)}</p>
+          <div class="muted">★ ${p.rating} (${p.reviews}) · المخزون ${p.stock}</div>
+          <button class="btn solid" id="add">أضف إلى السلة</button>
+          <p class="muted" id="msg"></p>
+        </div>
+        <div class="card"><b>الوصف</b><p class="muted">${p.desc}</p><b>المواصفات</b><ul>${p.specs.map(s=>`<li>${s}</li>`).join("")}</ul></div>`;
+      document.getElementById("add").onclick = () => {
+        document.getElementById("msg").textContent = add(p.id);
+        const cartLink = document.getElementById("n-cart");
+        cartLink.innerHTML = "السلة" + (count() ? ` <span class="badge">${count()}</span>` : "");
+      };
+    }
+    function assistant() {
+      app.innerHTML = `
+        <h2>المساعد الذكي</h2>
+        <p class="muted">يرشّح من كتالوج السوق فقط. نسخة تجريبية تعمل على جهازك.</p>
+        <div class="chips">${["أبي لابتوب للدراسة تحت 2000","كتاب فقه مناسب للمبتدئ","هدية عطر أقل من 200"].map(s=>`<button class="cat" data-s="${s}">${s}</button>`).join("")}</div>
+        <div class="chat" id="chat">${chat.map(bubble).join("")}</div>
+        <form class="bar" id="f"><input id="t" placeholder="اكتب طلبك هنا..."><button class="btn light" style="background:var(--green);color:#fff">إرسال</button></form>`;
+      document.querySelectorAll("[data-s]").forEach(b => b.onclick = () => send(b.dataset.s));
+      document.getElementById("f").onsubmit = e => { e.preventDefault(); send(document.getElementById("t").value); };
+    }
+    function bubble(m) {
+      if (m.role==="me") return `<div class="bubble me">${m.text}</div>`;
+      return `<div class="bubble bot">${m.text}${m.products? m.products.map(p=>`<div class="mini"><a href="#/product/${p.id}"><b>${p.emoji} ${p.name}</b></a> · ${money(p.price)}<div class="muted">${p.tagline}</div><button class="cat" onclick="add('${p.id}'); alert('أُضيف إلى السلة')">أضف للسلة</button></div>`).join(""):""}</div>`;
+    }
+    function send(text) {
+      if (!text.trim()) return;
+      chat.push({role:"me", text});
+      const r = answer(text);
+      chat.push({role:"bot", text:r.text, products:r.products});
+      assistant();
+    }
+    function cartPage() {
+      if (!cart.length) { app.innerHTML = `<div class="card" style="text-align:center"><b>سلتك فارغة</b><p class="muted">أضف منتجاً من السوق أو عبر المساعد.</p><a class="btn solid" href="#/" style="display:inline-block;width:auto;padding:10px 18px">تصفح السوق</a></div>`; return; }
+      app.innerHTML = `<h2>السلة</h2>${cart.map(i=>{ const p=get(i.productId); return `<div class="card" style="display:flex;gap:10px;align-items:center"><div class="thumb" style="background:${p.color}">${p.emoji}</div><div style="flex:1"><b>${p.name}</b><div class="muted">${money(p.price)}</div><div class="qty"><button onclick="setQty('${p.id}',${i.qty-1}); route()">−</button><span>${i.qty}</span><button onclick="setQty('${p.id}',${i.qty+1}); route()">+</button></div></div></div>`; }).join("")}
+        <div class="card" style="background:#0f5c4c;color:#fff"><div style="display:flex;justify-content:space-between"><span>الإجمالي</span><b>${money(total())}</b></div><a class="btn light" href="#/checkout" style="display:block;text-align:center;margin-top:12px">إتمام الطلب</a></div>`;
+    }
+    function checkout() {
+      if (!cart.length) { location.hash="#/cart"; return; }
+      app.innerHTML = `<h2>إتمام الطلب</h2><p class="muted">هذه معاينة. الدفع عند الاستلام، والطلب يُحفظ على هذا الجهاز.</p>
+        <form class="card" id="c">
+          <input class="search" name="name" placeholder="الاسم" required>
+          <input class="search" name="phone" placeholder="رقم الجوال" required>
+          <input class="search" name="city" placeholder="المدينة" required>
+          <textarea class="search" name="address" placeholder="العنوان بالتفصيل" required></textarea>
+          <div style="display:flex;justify-content:space-between;margin:8px 0"><span>الإجمالي · الدفع عند الاستلام</span><b>${money(total())}</b></div>
+          <button class="btn solid">تأكيد الطلب التجريبي</button>
+        </form>`;
+      document.getElementById("c").onsubmit = e => {
+        e.preventDefault();
+        const f = new FormData(e.target);
+        const order = {id:"AZ-"+Date.now().toString().slice(-8), name:f.get("name"), phone:f.get("phone"), city:f.get("city"), address:f.get("address"), items:[...cart], total:total(), status:"جديد"};
+        orders.unshift(order); save("azhary-orders", orders); cart=[]; save("azhary-cart", cart);
+        location.hash = "#/orders";
+      };
+    }
+    function ordersPage() {
+      app.innerHTML = `<h2>طلباتي</h2>` + (orders.length? orders.map(o=>`<div class="card"><div style="display:flex;justify-content:space-between"><b>${o.id}</b><span class="cat on">${o.status}</span></div><div class="muted">${o.name} · ${o.city} · ${money(o.total)}</div><ul>${o.items.map(i=>`<li>${get(i.productId)?.name||i.productId} × ${i.qty}</li>`).join("")}</ul></div>`).join("") : `<div class="card muted">لا توجد طلبات بعد.</div>`);
+    }
+    window.addEventListener("hashchange", route);
+    route();
+  </script>
+</body>
+</html>
